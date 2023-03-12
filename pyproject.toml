@@ -1,10 +1,12 @@
 [tool.poetry]
-name = "pratica1-intro"
+name = "sc_practical_classes"
 version = "0.1.0"
-description = ""
+license = "MIT"
+description = "A compilation of notes, modelling exercises and practical course work for the course of Signal Converters of the Electrical and Computers Eng. Dep. of NOVA University of Lisbon."
 authors = ["das-dias <das.dias6@gmail.com>"]
 readme = "README.md"
-packages = [{include = "pratica1_intro"}]
+packages = [{include = "pratical_classes"}]
+
 
 [tool.poetry.dependencies]
 python = "^3.11"

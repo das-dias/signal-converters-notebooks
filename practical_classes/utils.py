@@ -3,7 +3,7 @@ import numpy as np
 import pdb
 
 # define the function to convert a binary vector to decimal
-def bin2dec(x, width):
+def bin2dec(x, width, reverse=False):
     """Convert a numpy array from binary to decimal.
     IF the input is an array of binary arrays, 
     the returned output is an array of the corresponding 
@@ -12,13 +12,17 @@ def bin2dec(x, width):
         x: numpy array
         b: base of the number system
     """
-    x = np.array(x)
-    if x.size == width:
-        assert len(x) == width, "The length of the vector must be equal to the number of bits"
+    x = np.array(x) if not isinstance(x, np.ndarray) else x
+    if len(x) == width:
+        if reverse:
+            x = np.flip(x)
+        #assert len(x) == width, "The length of the vector must be equal to the number of bits"
         return reduce(lambda x,b: 2*x + b, x)
-    assert len(x[0]) == width, "The length of the vector must be equal to the number of bits"
+    assert len(x[0]) == width, "The length of each binary vector must be equal to the number of bits"
+    if reverse:
+        x = np.flip(x, axis=1)
     return np.array(np.array([reduce(lambda xval,b: 2*xval + b, xval) for xval in x]))
-def dec2bin(x, width):
+def dec2bin(x, width, reverse=False):
     """Convert a numpy array from decimal to binary
     If the input is an array of decimals, the returned 
     binary arrays are the codes corresponding to 
@@ -29,8 +33,10 @@ def dec2bin(x, width):
     """
     x = np.array(x)
     if x.size == 1:
-        return np.array([int(c) for c in np.binary_repr(x, width=width)])
-    return np.array([np.array([int(c) for c in np.binary_repr(subx, width=width)]) for subx in x])
+        arr = np.array([int(c) for c in np.binary_repr(x, width=width)])
+        return np.flip(arr) if reverse else arr
+    arr = np.array([np.array([int(c) for c in np.binary_repr(subx, width=width)]) for subx in x])
+    return np.flip(arr, axis=1) if reverse else arr
 
 def ideal_dac(vref:float, n_bits:int):
     """Define the transfer function of an ideal 

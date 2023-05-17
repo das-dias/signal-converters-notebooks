@@ -102,3 +102,34 @@ def nonideal_adc(vref, n_bits, ofst=0, gain=1, vnq=0, roundf=np.round):
         # compute the output code and return it 
         return dec2bin(ntrans, n_bits)
     return lambda x: _transfer_function(x, vtrans, n_bits), vtrans
+
+
+def binsub(
+    a, b
+):
+    """Binary word subtraction.
+    Args:
+        a (_type_): _description_
+        b (_type_): _description_
+    """
+    
+
+def digital_error_correction(
+    douts:list
+):
+    """Perform digital error correction
+    
+    Args:
+        douts (list): _description_
+    """
+    if douts[0].size == len(douts[0]):
+        douts = [ np.array(codes) for codes in douts ]
+    width = np.sum( [codes.shape[1] for codes in douts] ) - ( len(douts)-1 )
+    # subtract 1 bit from each dout word
+    
+    # pad the first dout code word to the total output width
+    
+    # pad the remaining dout code words and add it to the first dout, 
+    # aligning its MSB to the LSB of the previous code word (through 
+    # a left shift)
+    

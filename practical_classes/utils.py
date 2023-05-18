@@ -22,6 +22,7 @@ def bin2dec(x, width, reverse=False):
     if reverse:
         x = np.flip(x, axis=1)
     return np.array(np.array([reduce(lambda xval,b: 2*xval + b, xval) for xval in x]))
+
 def dec2bin(x, width, reverse=False):
     """Convert a numpy array from decimal to binary
     If the input is an array of decimals, the returned 
@@ -31,11 +32,12 @@ def dec2bin(x, width, reverse=False):
         x: numpy array
         b: base of the number system
     """
-    x = np.array(x)
+    x = np.array(x) if not isinstance(x, np.ndarray) else x
+    x = x.astype(int)
     if x.size == 1:
         arr = np.array([int(c) for c in np.binary_repr(x, width=width)])
         return np.flip(arr) if reverse else arr
-    arr = np.array([np.array([int(c) for c in np.binary_repr(subx, width=width)]) for subx in x])
+    arr = np.array([[int(c) for c in np.binary_repr(subx, width=width)] for subx in x])
     return np.flip(arr, axis=1) if reverse else arr
 
 def ideal_dac(vref:float, n_bits:int):
@@ -112,24 +114,71 @@ def binsub(
         a (_type_): _description_
         b (_type_): _description_
     """
+    width_a = len(a) if a.size == 1 else a.shape[1]
+    width_b = len(b) if b.size == 1 else b.shape[1]
+    return dec2bin(bin2dec(a, width_a) - bin2dec(b, width_b), np.max([width_a, width_b]))
+
+def binadd(
+    a, b
+):
+    """Binary word addition.
+    Args:
+        a (_type_): _description_
+        b (_type_): _description_
+    """
+    width_a = len(a) if a.size == 1 else a.shape[1]
+    width_b = len(b) if b.size == 1 else b.shape[1]
+    return dec2bin(bin2dec(a, width_a) + bin2dec(b, width_b), np.max([width_a, width_b]))
     
 
 def digital_error_correction(
-    douts:list
+    douts,
+    scale_factors,
+    reverse=False,
+    bin=True
 ):
     """Perform digital error correction
     
     Args:
-        douts (list): _description_
+        douts (list): The list of output codes of each stage of the pipeline.
+        scale_factors (list): The list of scale factors between the output codes of each stage of the pipeline.
+        reverse (bool): The flag to indicate if the output word must be reversed.
+        bin (bool): The flag to indicate if the output word must be returned as a binary word.
     """
-    if douts[0].size == len(douts[0]):
-        douts = [ np.array(codes) for codes in douts ]
-    width = np.sum( [codes.shape[1] for codes in douts] ) - ( len(douts)-1 )
+    if douts[0].size == 1:
+        douts = [ np.array(codes).reshape(1, -1) for codes in douts ]
+    # assert if there are equal number of codes in each dout
+    assert len(set([ codes.shape[0] for codes in douts ])) == 1, "The number of codes in each dout must be equal"
+    
+    width = np.sum( [codes.shape[1] for codes in douts] ) - len(douts) + 1
+    #word_out = np.zeros( (douts[0].shape[0], width) )
     # subtract 1 bit from each dout word
+    # pad the first dout code word to the total output width, by adding zeros to the right
+    #word_out[:, :douts[0].shape[1]] = douts[0]
+    # align the msb of the next dout code word with the lsb of the previous dout code word
+    # and add the next dout code word to the output word
+    #word = bin2dec(word_out, width, reverse=reverse)
     
-    # pad the first dout code word to the total output width
+    #for i in range(1, len(douts)):
+        # create padded auxiliar word
+        #aux_word = np.zeros( (douts[i].shape[0], word_out.shape[1]) )    
+        #aux = bin2dec(douts[i], douts[i].shape[1]) - 2**(douts[i].shape[1]-2) # subtract a shifted 1 from the output word of each stage to perform digital error correction
+        #pdb.set_trace()
+        #word += aux*2**(  ) # add the auxiliar word to the output word while aligning the lsb of the auxiliar word with the msb of the output word
+    widths = [codes.shape[1] for codes in douts]
+    #widths = widths
+    word = bin2dec(douts[0], widths[0])*2**(width - widths[0])
+    #pdb.set_trace()
+    prev_exp = width - widths[0]
+    for k in range(1,len(widths)):
+        aux = bin2dec(douts[k], widths[k]) - 2**(widths[k]-1-scale_factors[k-1])
+        #pdb.set_trace()
+        word += aux*2**(prev_exp + 1 - widths[k])
+        #pdb.set_trace()
+        prev_exp = widths[k-1] - widths[k]
+        
     
-    # pad the remaining dout code words and add it to the first dout, 
-    # aligning its MSB to the LSB of the previous code word (through 
-    # a left shift)
+    # return the output word
+    return dec2bin(word, width, reverse=reverse) if bin else word
+
     

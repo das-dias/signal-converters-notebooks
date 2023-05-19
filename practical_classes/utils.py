@@ -171,13 +171,16 @@ def digital_error_correction(
     #pdb.set_trace()
     prev_exp = width - widths[0]
     for k in range(1,len(widths)):
-        aux = bin2dec(douts[k], widths[k]) - 2**(widths[k]-1-scale_factors[k-1])
+        aux = bin2dec(douts[k], widths[k])
         #pdb.set_trace()
+        aux -= 2**(widths[k] - 2)
         word += aux*2**(prev_exp + 1 - widths[k])
         #pdb.set_trace()
         prev_exp = widths[k-1] - widths[k]
         
-    
+    # take care of overflows
+    word[word > 2**width - 1]   = 2**width - 1
+    word[word < 0]              = 0
     # return the output word
     return dec2bin(word, width, reverse=reverse) if bin else word
 

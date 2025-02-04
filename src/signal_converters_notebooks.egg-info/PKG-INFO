@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: signal-converters-notebooks
 Version: 0.1.0
 Summary: Add your description here
@@ -6,7 +6,9 @@ Author-email: dasdias <das.dias6@gmail.com>
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Requires-Dist: jupyter>=1.1.1
 Requires-Dist: matplotlib>=3.10.0
+Requires-Dist: nbconvert>=7.16.6
 Requires-Dist: numpy>=2.2.2
 Requires-Dist: scienceplots>=2.1.1
 Requires-Dist: scipy>=1.15.1

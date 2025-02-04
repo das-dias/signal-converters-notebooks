@@ -1,3 +1,4 @@
 /docs/*.pdf
 /docs/*.ppsx
 .venv
+docs/markdown

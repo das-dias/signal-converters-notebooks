@@ -1,22 +1,20 @@
-[tool.poetry]
-name = "sc_practical_classes"
+[project]
+name = "signal-converters-notebooks"
 version = "0.1.0"
-license = "MIT"
-description = "A compilation of notes, modelling exercises and practical course work for the course of Signal Converters of the Electrical and Computers Eng. Dep. of NOVA University of Lisbon."
-authors = ["das-dias <das.dias6@gmail.com>"]
+description = "Add your description here"
 readme = "README.md"
-packages = [{include = "pratical_classes"}]
+authors = [
+    { name = "dasdias", email = "das.dias6@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "matplotlib>=3.10.0",
+    "numpy>=2.2.2",
+    "scienceplots>=2.1.1",
+    "scipy>=1.15.1",
+    "seaborn>=0.13.2",
+]
 
-
-[tool.poetry.dependencies]
-python = "<3.12,>=3.8"
-numpy = "^1.24.2"
-scipy = "^1.10.1"
-seaborn = "^0.12.2"
-
-
-[tool.poetry.dev-dependencies]
-ipykernel = "^6.22.0"
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/signal_converters_notebooks/__init__.py
+src/signal_converters_notebooks/py.typed
+src/signal_converters_notebooks.egg-info/PKG-INFO
+src/signal_converters_notebooks.egg-info/SOURCES.txt
+src/signal_converters_notebooks.egg-info/dependency_links.txt
+src/signal_converters_notebooks.egg-info/requires.txt
+src/signal_converters_notebooks.egg-info/top_level.txt

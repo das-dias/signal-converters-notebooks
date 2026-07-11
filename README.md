@@ -13,7 +13,7 @@
 
 This repository contains [Jupyter Notebooks](https://jupyter.org/) for the **Mixed-Signal Converters** course at the Faculty of Sciences and Technology, NOVA University of Lisbon (FCT-NOVA).
 
-The course covers the systems theory, design, and practical aspects of **Digital-to-Analog (DAC)** and **Analog-to-Digital Converters (ADC)**. The notebooks enable:
+The course covers the systems theory, design, and practical aspects of **Nyquist data-rate Digital-to-Analog (DAC)** and **Analog-to-Digital Converters (ADC)**. Content on oversampled converters (sigma-delta modulators, noise shaping) is planned for future additions. The notebooks enable:
 
 - Representing and generating signals in the frequency and time domains
 - Modeling random noise (uniform, Gaussian distributions)

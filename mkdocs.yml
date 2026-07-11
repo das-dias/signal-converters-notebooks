@@ -1,6 +1,6 @@
 site_name: Mixed-Signal Converters Course
 site_url: https://das-dias.github.io/signal-converter-notebooks/
-site_description: Educational Jupyter Notebooks for Mixed-Signal Converters at FCT-NOVA
+site_description: Educational Jupyter Notebooks for Nyquist Data-Rate Mixed-Signal Converters at FCT-NOVA
 site_author: Diogo André Dias
 
 repo_url: https://github.com/das-dias/signal-converters-notebooks
@@ -12,14 +12,12 @@ theme:
   name: material
   palette:
     - scheme: default
-      primary: indigo
-      accent: indigo
+      primary: grey
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: grey
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -52,6 +50,9 @@ markdown_extensions:
   - pymdownx.details
   - toc:
       permalink: true
+
+extra_css:
+  - stylesheets/extra.css
 
 extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

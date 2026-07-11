@@ -4,7 +4,10 @@
 
 Educational Jupyter Notebooks for the **Mixed-Signal Converters** course at the Faculty of Sciences and Technology, NOVA University of Lisbon (FCT-NOVA).
 
-This collection covers the systems theory, design, and simulation of **Digital-to-Analog (DAC)** and **Analog-to-Digital Converters (ADC)** using Python.
+This collection covers the systems theory, design, and simulation of **Nyquist data-rate Digital-to-Analog (DAC)** and **Analog-to-Digital Converters (ADC)** using Python.
+
+!!! info "Future Content"
+    The current notebooks focus exclusively on **Nyquist-rate converter** architectures (flash, SAR, pipeline, resistive/capacitive/current-steering DACs). Content on **oversampled converters** — sigma-delta modulators, noise shaping, decimation filters — is planned for future additions.
 
 ---
 

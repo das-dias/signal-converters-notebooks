@@ -25,3 +25,13 @@ dependencies = [
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+exclude = ["practical_classes/project2_c2c_differential_sar_adc.ipynb"]
+
+[tool.ruff.lint]
+ignore = [
+    "E402",  # module-level import not at top — normal in Jupyter cells
+    "E731",  # lambda assignment — intentional for DAC/ADC transfer functions
+    "E741",  # ambiguous variable name — l is standard for transistor gate length
+]

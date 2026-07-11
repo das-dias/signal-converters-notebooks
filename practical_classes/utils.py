@@ -17,7 +17,9 @@ def bin2dec(x, width, reverse=False):
         if reverse:
             x = np.flip(x)
         return reduce(lambda acc, bit: 2 * acc + bit, x)
-    assert len(x[0]) == width, "The length of each binary vector must be equal to the number of bits"
+    assert len(x[0]) == width, (
+        "The length of each binary vector must be equal to the number of bits"
+    )
     if reverse:
         x = np.flip(x, axis=1)
     return np.array([reduce(lambda acc, bit: 2 * acc + bit, xval) for xval in x])
@@ -65,7 +67,9 @@ def ideal_adc(vref: float, nbits: int, roundf):
     Returns:
         function(Vin): the lambda function defining the transfer function of the ADC
     """
-    assert roundf in [np.round, np.ceil, np.floor], "The round function must be numpy.floor, numpy.ceil or numpy.round"
+    assert roundf in [np.round, np.ceil, np.floor], (
+        "The round function must be numpy.floor, numpy.ceil or numpy.round"
+    )
     vlsb = vref / (2**nbits)
     return lambda x: dec2bin(roundf(x / vlsb).astype(int), nbits)
 
@@ -88,14 +92,18 @@ def nonideal_adc(vref, n_bits, ofst=0, gain=1, vnq=0, roundf=np.round):
         vtrans (numpy array): the transition voltages
     """
     assert n_bits > 0, "The number of bits must be greater than zero"
-    assert roundf in [np.round, np.floor, np.ceil], "The rounding function must be one of the following: np.round, np.floor, np.ceil"
+    assert roundf in [np.round, np.floor, np.ceil], (
+        "The rounding function must be one of the following: np.round, np.floor, np.ceil"
+    )
     vlsb = vref / (2**n_bits)
     vtrans = np.arange(vlsb, vref, vlsb) * gain + ofst
     qnoise = np.random.uniform(-vnq, vnq, len(vtrans)) if vnq > 0 else 0
     vtrans += qnoise
 
     def _transfer_function(x, vtrans=vtrans, n_bits=n_bits):
-        assert len(vtrans) == 2**n_bits - 1, "The number of transition voltages must be equal to the number of transitions between output codes of the ADC"
+        assert len(vtrans) == 2**n_bits - 1, (
+            "The number of transition voltages must be equal to the number of transitions between output codes of the ADC"
+        )
         if x.size == 1:
             ntrans = np.sum(x > vtrans)
         else:
@@ -113,7 +121,9 @@ def binsub(a, b):
     """
     width_a = len(a) if a.size == 1 else a.shape[1]
     width_b = len(b) if b.size == 1 else b.shape[1]
-    return dec2bin(bin2dec(a, width_a) - bin2dec(b, width_b), np.max([width_a, width_b]))
+    return dec2bin(
+        bin2dec(a, width_a) - bin2dec(b, width_b), np.max([width_a, width_b])
+    )
 
 
 def binadd(a, b):
@@ -124,7 +134,9 @@ def binadd(a, b):
     """
     width_a = len(a) if a.size == 1 else a.shape[1]
     width_b = len(b) if b.size == 1 else b.shape[1]
-    return dec2bin(bin2dec(a, width_a) + bin2dec(b, width_b), np.max([width_a, width_b]))
+    return dec2bin(
+        bin2dec(a, width_a) + bin2dec(b, width_b), np.max([width_a, width_b])
+    )
 
 
 def digital_error_correction(
@@ -143,7 +155,9 @@ def digital_error_correction(
     """
     if douts[0].size == 1:
         douts = [np.array(codes).reshape(1, -1) for codes in douts]
-    assert len(set([codes.shape[0] for codes in douts])) == 1, "The number of codes in each dout must be equal"
+    assert len(set([codes.shape[0] for codes in douts])) == 1, (
+        "The number of codes in each dout must be equal"
+    )
 
     width = np.sum([codes.shape[1] for codes in douts]) - len(douts) + 1
     widths = [codes.shape[1] for codes in douts]

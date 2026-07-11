@@ -3,14 +3,23 @@
 from warnings import warn
 
 from numpy.fft import fft, fftfreq, fftshift
-from numpy import ndarray, nan # core types
-from numpy import array, arange, abs, log10, sqrt, diff # core functions
+from numpy import ndarray  # core types
+from numpy import array, arange, abs, log10, sqrt, diff  # core functions
 from numpy import sum as npsum
 from numpy import min as npmin
 from numpy import max as npmax
-from numpy import argmax, argmin, argwhere # core array searching utilities
+from numpy import argmax, argmin, argwhere  # core array searching utilities
 
-from scipy.signal import hann, hamming, blackmanharris, blackman, gaussian, kaiser, cosine, parzen
+from scipy.signal import (
+    hann,
+    hamming,
+    blackmanharris,
+    blackman,
+    gaussian,
+    kaiser,
+    cosine,
+    parzen,
+)
 
 
 windows = {
@@ -74,8 +83,12 @@ class FFTEngine:
         """
         signal = self.signal
         assert len(signal) > 0, "signal must have at least one point."
-        assert n_points > 0, "n_points must be an integer greater and 0 - and preferably a power of 2 for fft computation speed up."
-        assert n_points <= len(signal), "n_points must be less than or equal to the signal length."
+        assert n_points > 0, (
+            "n_points must be an integer greater and 0 - and preferably a power of 2 for fft computation speed up."
+        )
+        assert n_points <= len(signal), (
+            "n_points must be less than or equal to the signal length."
+        )
 
         downsampling = len(signal) // n_points
         downsampling = 1 if downsampling == 0 else downsampling
@@ -83,19 +96,25 @@ class FFTEngine:
         np_fft = len(signal)
 
         if window not in list(windows.keys()):
-            warn(f"Window function {window} not implemented. Setting to default rectangular window.")
-            print("Available windows: ", '\n'.join(list(windows.keys())))
+            warn(
+                f"Window function {window} not implemented. Setting to default rectangular window."
+            )
+            print("Available windows: ", "\n".join(list(windows.keys())))
             window = "rectangular"
         signal = windows[window](signal, np_fft)
 
         if self.time is not None:
             if fs is not None:
-                warn("fs - sampling frequency will be ignored since a time axis is provided.")
+                warn(
+                    "fs - sampling frequency will be ignored since a time axis is provided."
+                )
             tt = self.time[::downsampling]
             ts = npmin(diff(tt))
             ff = fftshift(fftfreq(np_fft, ts))  # [Hz]
         else:
-            assert fs is not None, "fs - sampling frequency must be provided if no time axis is provided."
+            assert fs is not None, (
+                "fs - sampling frequency must be provided if no time axis is provided."
+            )
             assert fs > 0, "fs - sampling frequency must be positive."
             ts = 1 / fs
             tt = ts * arange(np_fft)
@@ -135,26 +154,29 @@ class FFTEngine:
             for mult in range(1, harmonics + 1)
             if mult * signal_bin <= npmax(pff)
         ]
-        harmonic_bins = array([
-            pff[argmin(abs(pff - (fs - freq_bin)))]
-            if freq_bin > fs / 2
-            else freq_bin
-            for freq_bin in harmonic_bins
-        ])
-        harmonic_bins_idxs = array([argwhere(pff == freq_bin)[0] for freq_bin in harmonic_bins]).reshape(-1)
-        harmonics_power = array([
-            npsum(pps[harmonic_bin_idx - span : harmonic_bin_idx + span])
-            for harmonic_bin_idx in harmonic_bins_idxs
-        ])
+        harmonic_bins = array(
+            [
+                pff[argmin(abs(pff - (fs - freq_bin)))]
+                if freq_bin > fs / 2
+                else freq_bin
+                for freq_bin in harmonic_bins
+            ]
+        )
+        harmonic_bins_idxs = array(
+            [argwhere(pff == freq_bin)[0] for freq_bin in harmonic_bins]
+        ).reshape(-1)
+        harmonics_power = array(
+            [
+                npsum(pps[harmonic_bin_idx - span : harmonic_bin_idx + span])
+                for harmonic_bin_idx in harmonic_bins_idxs
+            ]
+        )
         self.harmonic_bin_idxs = harmonic_bins_idxs
         self.harmonic_bins = harmonic_bins
         self.harmonic_powers = harmonics_power
         return harmonic_bins_idxs, harmonic_bins, harmonics_power
 
-    def get_dc(
-        self,
-        span: int = 1
-    ):
+    def get_dc(self, span: int = 1):
         """Compute the DC component of a signal.
         Args:
             span (int, optional): number of bins the signal bin occupies. Defaults to 1.
@@ -163,15 +185,12 @@ class FFTEngine:
                 - blackmanharris, gaussian, kaiser, cosine, parzen = 5
         """
         pps = self.ps_f[self.ff >= 0]
-        signal_dc_power = npsum(pps[0 : span])
+        signal_dc_power = npsum(pps[0:span])
         dc_level = sqrt(signal_dc_power)
         self.dc = dc_level
         return dc_level
 
-    def get_snr(
-        self,
-        span: int = 1
-    ):
+    def get_snr(self, span: int = 1):
         """Compute the signal-to-noise ratio of a signal.
         Args:
             span (int, optional): number of bins the signal bin occupies. Defaults to 1.
@@ -179,37 +198,41 @@ class FFTEngine:
                 - hann, hamming, blackman = 3
                 - blackmanharris, gaussian, kaiser, cosine, parzen = 5
         """
-        assert self.harmonic_bins is not None, "harmonic_bins must be computed before computing the SNR."
-        assert self.harmonic_powers is not None, "harmonic_powers must be computed before computing the SNR."
-        assert len(self.harmonic_bins) > 1, "harmonic_bins must have at least two elements."
+        assert self.harmonic_bins is not None, (
+            "harmonic_bins must be computed before computing the SNR."
+        )
+        assert self.harmonic_powers is not None, (
+            "harmonic_powers must be computed before computing the SNR."
+        )
+        assert len(self.harmonic_bins) > 1, (
+            "harmonic_bins must have at least two elements."
+        )
         assert span > 0, "span must be an integer greater than 0."
         signal_power = self.harmonic_powers[0]
         pps = self.ps_f[self.ff >= 0]
         total_distortion_power = npsum(self.harmonic_powers[1:])
         dc_power = self.get_dc(span) ** 2
-        noise_power = (
-            npsum(pps)
-            - dc_power
-            - signal_power
-            - total_distortion_power
-        )
+        noise_power = npsum(pps) - dc_power - signal_power - total_distortion_power
         self.snr = 10 * log10(signal_power / noise_power)
         return self.snr
 
     def get_thd(self):
         """Compute the total harmonic distortion of a signal."""
-        assert self.harmonic_bins is not None, "harmonic_bins must be computed before computing the THD."
-        assert self.harmonic_powers is not None, "harmonic_powers must be computed before computing the THD."
-        assert len(self.harmonic_bins) > 1, "harmonic_bins must have at least two elements."
+        assert self.harmonic_bins is not None, (
+            "harmonic_bins must be computed before computing the THD."
+        )
+        assert self.harmonic_powers is not None, (
+            "harmonic_powers must be computed before computing the THD."
+        )
+        assert len(self.harmonic_bins) > 1, (
+            "harmonic_bins must have at least two elements."
+        )
         signal_power = self.harmonic_powers[0]
         total_distortion_power = npsum(self.harmonic_powers[1:])
         self.thd = 10 * log10(signal_power / total_distortion_power)
         return self.thd
 
-    def get_sfdr(
-        self,
-        span: int = 1
-    ):
+    def get_sfdr(self, span: int = 1):
         """Compute the spurious-free dynamic range of a signal.
         Args:
             span (int, optional): number of bins the signal bin occupies. Defaults to 1.
@@ -217,19 +240,23 @@ class FFTEngine:
                 - hann, hamming, blackman = 3
                 - blackmanharris, gaussian, kaiser, cosine, parzen = 5
         """
-        assert self.harmonic_bins is not None, "harmonic_bins must be computed before computing the SFDR."
-        assert self.harmonic_powers is not None, "harmonic_powers must be computed before computing the SFDR."
-        assert len(self.harmonic_bins) > 1, "harmonic_bins must have at least two elements."
+        assert self.harmonic_bins is not None, (
+            "harmonic_bins must be computed before computing the SFDR."
+        )
+        assert self.harmonic_powers is not None, (
+            "harmonic_powers must be computed before computing the SFDR."
+        )
+        assert len(self.harmonic_bins) > 1, (
+            "harmonic_bins must have at least two elements."
+        )
         assert span > 0, "span must be an integer greater than 0."
         pps = self.ps_f[self.ff >= 0]
         signal_bin_idx = self.harmonic_bin_idxs[0]
         spurious_spectrum = pps.copy()
         spurious_spectrum[signal_bin_idx - span : signal_bin_idx + span] = npmin(pps)
-        spurious_spectrum[0 : span] = npmin(pps)
+        spurious_spectrum[0:span] = npmin(pps)
         spur_bin_idx = argmax(spurious_spectrum)
-        spur_power = npsum(
-            spurious_spectrum[spur_bin_idx - span : spur_bin_idx + span]
-        )
+        spur_power = npsum(spurious_spectrum[spur_bin_idx - span : spur_bin_idx + span])
         signal_power = self.harmonic_powers[0]
         self.sfdr = 10 * log10(signal_power / spur_power)
         return self.sfdr
@@ -245,36 +272,49 @@ class FFTEngine:
                 - hann, hamming, blackman = 3
                 - blackmanharris, gaussian, kaiser, cosine, parzen = 5
         """
-        assert self.harmonic_bins is not None, "harmonic_bins must be computed before computing the SNDR."
-        assert self.harmonic_powers is not None, "harmonic_powers must be computed before computing the SNDR."
-        assert len(self.harmonic_bins) > 1, "harmonic_bins must have at least two elements."
+        assert self.harmonic_bins is not None, (
+            "harmonic_bins must be computed before computing the SNDR."
+        )
+        assert self.harmonic_powers is not None, (
+            "harmonic_powers must be computed before computing the SNDR."
+        )
+        assert len(self.harmonic_bins) > 1, (
+            "harmonic_bins must have at least two elements."
+        )
         assert span > 0, "span must be an integer greater than 0."
         pps = self.ps_f[self.ff >= 0]
         dc_power = self.get_dc(span) ** 2
         signal_power = self.harmonic_powers[0]
         total_distortion_power = npsum(self.harmonic_powers[1:])
-        noise_power = (
-            npsum(pps)
-            - dc_power
-            - signal_power
-            - total_distortion_power
-        )
+        noise_power = npsum(pps) - dc_power - signal_power - total_distortion_power
         self.sndr = 10 * log10(signal_power / (noise_power + total_distortion_power))
         return self.sndr
 
     def get_h2(self):
         """Compute the second harmonic distortion of a signal."""
-        assert self.harmonic_bins is not None, "harmonic_bins must be computed before computing H2."
-        assert self.harmonic_powers is not None, "harmonic_powers must be computed before computing H2."
-        assert len(self.harmonic_bins) > 1, "harmonic_bins must have at least two elements."
+        assert self.harmonic_bins is not None, (
+            "harmonic_bins must be computed before computing H2."
+        )
+        assert self.harmonic_powers is not None, (
+            "harmonic_powers must be computed before computing H2."
+        )
+        assert len(self.harmonic_bins) > 1, (
+            "harmonic_bins must have at least two elements."
+        )
         self.h2 = 10 * log10(self.harmonic_powers[1] / self.harmonic_powers[0])
         return self.h2
 
     def get_h3(self):
         """Compute the third harmonic distortion of a signal."""
-        assert self.harmonic_bins is not None, "harmonic_bins must be computed before computing H3."
-        assert self.harmonic_powers is not None, "harmonic_powers must be computed before computing H3."
-        assert len(self.harmonic_bins) > 2, "harmonic_bins must have at least three elements."
+        assert self.harmonic_bins is not None, (
+            "harmonic_bins must be computed before computing H3."
+        )
+        assert self.harmonic_powers is not None, (
+            "harmonic_powers must be computed before computing H3."
+        )
+        assert len(self.harmonic_bins) > 2, (
+            "harmonic_bins must have at least three elements."
+        )
         self.h3 = 10 * log10(self.harmonic_powers[2] / self.harmonic_powers[0])
         return self.h3
 
@@ -290,8 +330,12 @@ class FFTEngine:
                 - hann, hamming, blackman = 3
                 - blackmanharris, gaussian, kaiser, cosine, parzen = 5
         """
-        assert self.harmonic_bins is not None, "harmonic_bins must be computed before computing the ENOB."
-        assert self.harmonic_powers is not None, "harmonic_powers must be computed before computing the ENOB."
+        assert self.harmonic_bins is not None, (
+            "harmonic_bins must be computed before computing the ENOB."
+        )
+        assert self.harmonic_powers is not None, (
+            "harmonic_powers must be computed before computing the ENOB."
+        )
         assert span > 0, "span must be an integer greater than 0."
         sndr = self.get_sndr(span)
         self.enob = (sndr - 1.76) / 6.02

@@ -1,0 +1,9 @@
+:root {
+  --md-accent-fg-color: #616161;
+  --md-accent-fg-color--transparent: #61616133;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-accent-fg-color: #9e9e9e;
+  --md-accent-fg-color--transparent: #9e9e9e33;
+}

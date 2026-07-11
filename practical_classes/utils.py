@@ -71,7 +71,8 @@ def ideal_adc(vref: float, nbits: int, roundf):
         "The round function must be numpy.floor, numpy.ceil or numpy.round"
     )
     vlsb = vref / (2**nbits)
-    return lambda x: dec2bin(roundf(x / vlsb).astype(int), nbits)
+    maxcode = 2**nbits - 1
+    return lambda x: dec2bin(np.clip(roundf(x / vlsb).astype(int), 0, maxcode), nbits)
 
 
 def nonideal_adc(vref, n_bits, ofst=0, gain=1, vnq=0, roundf=np.round):

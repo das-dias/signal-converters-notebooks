@@ -10,7 +10,7 @@ from numpy import min as npmin
 from numpy import max as npmax
 from numpy import argmax, argmin, argwhere  # core array searching utilities
 
-from scipy.signal import (
+from scipy.signal.windows import (
     hann,
     hamming,
     blackmanharris,

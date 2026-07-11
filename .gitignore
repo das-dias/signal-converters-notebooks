@@ -2,3 +2,5 @@
 /docs/*.ppsx
 .venv
 docs/markdown
+docs/notebooks/
+site/

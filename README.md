@@ -1,108 +1,101 @@
 
 <p align="center">
-    <img src="docs\imgs\banner.png" alt="msc-nova">
+    <img src="docs/imgs/banner.png" alt="msc-nova">
 </p>
 
 <h1 align="center">Mixed-Signal Converters Course Notebooks</h1>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
-<h2>Table of Contents</h2>
-<ul>
-	<li><a href="#dir-org">Directory Organization</a></li>
-	<li><a href="#overview">Overview</a></li>
-	<li><a href="#dependencies">Dependencies</a></li>
-	<li><a href="#downloading">Downloading</a></li>
-	<li><a href="#contributing">Contributing</a></li>
-	<li><a href="#licensing">Licensing</a></li>
-	<!-- Add more practical classes as needed -->
-</ul>
+## Overview
 
-<h2>Directory Organization</h2>
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python%203.11-lightgrey)](https://www.python.org/)
 
-<p>The repository is organized as follows:</p>
+This repository contains [Jupyter Notebooks](https://jupyter.org/) for the **Mixed-Signal Converters** course at the Faculty of Sciences and Technology, NOVA University of Lisbon (FCT-NOVA).
+
+The course covers the systems theory, design, and practical aspects of **Digital-to-Analog (DAC)** and **Analog-to-Digital Converters (ADC)**. The notebooks enable:
+
+- Representing and generating signals in the frequency and time domains
+- Modeling random noise (uniform, Gaussian distributions)
+- High-level and element-level modeling of DAC and ADC architectures
+- Spectral analysis of converter outputs (SNR, SFDR, SNDR, THD, ENOB)
+
+## Directory Organization
 
 ```
-signal-converters-course/
+signal-converters-notebooks/
 ├── practical_classes/
-│   ├── utils.py #featuring utilities functions imported locally
-│   ├── practical_class_1.ipynb
-│   ├── practical_class_2.ipynb
-│   ├── practical_class_3.ipynb
-│   └── ...
-├── resources/
-├── tests/
-└── README.md
+│   ├── utils.py          # Shared converter modeling utilities
+│   ├── fft.py            # FFT spectral analysis engine
+│   ├── practical_class_1.ipynb  ... practical_class_10.ipynb
+│   ├── project1_loopunrolled_pipeline_sar_adc.ipynb
+│   └── project2_c2c_differential_sar_adc.ipynb
+├── docs/
+│   ├── index.md          # Documentation landing page
+│   ├── imgs/             # Circuit diagrams and figures
+│   └── reference/        # API reference pages
+├── mkdocs.yml            # MkDocs configuration
+├── justfile              # Task runner recipes
+└── pyproject.toml
 ```
 
-<h2 align="left" id="overview">Overview</h2>
+## Getting Started
 
-<p>
-This GitHub repository features a collection of <a href="https://jupyter.org/">Jupyter Notebooks</a> that are used in the Signal Converters course at the Faculty of Sciences and Technology of the NOVA University of Lisbon. The course focuses on the systems theory, design and practical aspects regarding the implementation of Digital-to-Analog and Analog-to-Digital Converters (DAC and ADC, respectively), and was initially taught using <a href="https://octave.org/">Octave</a>, an open-source programming language inspired by <a href="https://www.mathworks.com/products/matlab.html">MATLAB</a>. <a href="https://python.org/">Python</a> is also open-source, and a much more powerful programming language than Octave. Due to having a greater user community it is also much more versatile. As such, the course's practical notes were converted and adapted to Python. Using Python and Jupyter Notebooks also enables two very useful features: 
-<ul>
-	<li>The possibility of adding HTML and <a href="https://www.markdownguide.org/">Markdown</a> notes in the middle of code - providing a powerful note-taking system;</li>
-	<li>The possibility of running computationally-heavy simulations in the cloud using <a href="https://colab.research.google.com/">Google Colab</a>.</li>
-</ul>
+### Prerequisites
 
-The notebooks were created by me and are intended to be used in the practical classes of the course. These notebooks feature examples of how to use Python to:
-<ul>
-	<li>Represent and generate signals in the frequency and time domains,</li>
-	<li>Represent and generate random noise following a uniform or normal (Gaussian) distribution,</li>
-	<li>Model Analog-to-Digital and Digital-to-Analog Converters, both in an high-level and mid-level of abstraction regarding their hardware implementation,</li>
-	<li>Generate block-level schematics representing the converter systems.</li>
-</ul>
-</p>
+- **Python 3.11+** managed with [uv](https://docs.astral.sh/uv/)
+- **[just](https://github.com/casey/just)** task runner — install via `brew install just`
 
-<h2 align="left" id="dependencies">Dependencies</h2>
-
-
-<!--This project is written in Python programming language. <br>-->
-
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python%203.9.13-lightgrey)](https://www.python.org/)
-
-The following open source packages are used in this project:
-  <br>
-
-* <a href="https://numpy.org/doc/"> NumPy</a> - general-purpose array-processing package
-* <a href="https://scipy.org/">SciPy</a> - fast-fourier-transform (FFT) and other advanced signal-processing algorithms
-* <a href="https://matplotlib.org/stable/index.html"> Matplotlib</a> & <a href="https://seaborn.pydata.org/">Seaborn</a> - data visualization and general plotting
-* <a href="https://schemdraw.readthedocs.io/en/latest/">SchemDraw</a> -  high-quality electrical circuit schematic diagrams
-</details>
-
-
-<h2 align="left" id="downloading">Downloading</h2>
-
-<p align="justify">You can download the zip file of this repository <a href="https://github.com/das-dias/signal-converters-notebooks/archive/refs/heads/master.zip">here</a>. Another alternative is to simply clone this repository to your current working directory using the following command:</p>
+### Installation
 
 ```bash
 git clone https://github.com/das-dias/signal-converters-notebooks.git
+cd signal-converters-notebooks
+uv sync
 ```
 
-or
+### Running Notebooks
 
 ```bash
-gh repo clone das-dias/signal-converters-notebooks
+uv run jupyter notebook
+# or
+uv run jupyter lab
 ```
 
-<h2 align="left" id="contributing">Contributing</h2>
+## Documentation
 
-<p align="justify">
-Feel free to clone this repository and use it to make oyur own notes, complement them and even expand the existing notes. If an issue or a bug/error is discovered within the shared code do not hesitate in contacting me through one of the following emails:
-<ul>
-	<li> das.dias@campus.fct.unl.pt (institutional)</li>
-	<li> das.dias6@gmail.fct (personal)</li>
-	<!-- Add more contributors as needed -->
-</ul>
+The project uses [MkDocs](https://www.mkdocs.org/) with [Material](https://squidfunk.github.io/mkdocs-material/) theme and [mknotebooks](https://github.com/greenape/mknotebooks) to render Jupyter notebooks directly into the documentation site.
 
-In the case of an issue, me or any other main contributor will open an <a href="https://github.com/das-dias/signal-converters-notebooks/issues">issue-tracking thread</a> for this repository for each of the bugs that are found. Any change that is made to the notes by people interested in collaborating should be done so by generating a new <a href="https://github.com/das-dias/signal-converters-notebooks/pulls">pull request</a> to update the existing notes. The changes will then be reviewed, discussed and approved if they're actually adding value to the notes or correctign existing issues.
+```bash
+just docs-serve     # Build and serve docs locally at http://localhost:8000
+just docs-build     # Build static site into site/
+just docs-deploy    # Deploy to GitHub Pages
+```
 
-</p>
+## Quality Checks
 
-<h3 align="left">Main Contributors</h3>
-<ul>
-	<li> (creator) Diogo André Dias (das.dias@campus.fct.unl.pt)</li>
-	<!-- Add more contributors as needed -->
-</ul>
+```bash
+just format         # Ruff-format all notebooks and Python files
+just lint           # Ruff lint (use `just lint-fix` for auto-fix)
+just pylint         # Pylint notebooks (converts to .py via nbconvert)
+just check          # Run all checks together
+```
 
-<h2 align="left">Licensing</h2>
-<p>This project is licensed under the MIT License - see the <a href="./LICENSE">LICENSE</a> file or go to <a href="">the website</a> to find more details.</p>
+## Dependencies
+
+- [NumPy](https://numpy.org/) — Array processing and numerical computation
+- [SciPy](https://scipy.org/) — FFT and signal processing algorithms
+- [Matplotlib](https://matplotlib.org/) + [SciencePlots](https://github.com/garrettj403/SciencePlots) — Publication-quality plots
+- [Seaborn](https://seaborn.pydata.org/) — Statistical visualizations
+
+## Contributing
+
+Feel free to clone this repository and expand the existing notes. If you discover issues or bugs, please open an [issue](https://github.com/das-dias/signal-converters-notebooks/issues). Changes should be submitted via [pull request](https://github.com/das-dias/signal-converters-notebooks/pulls).
+
+### Main Contributors
+
+- (creator) Diogo André Dias — das.dias@campus.fct.unl.pt
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](./LICENSE) file for details.

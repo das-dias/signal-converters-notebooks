@@ -1,0 +1,76 @@
+site_name: Mixed-Signal Converters Course
+site_url: https://das-dias.github.io/signal-converter-notebooks/
+site_description: Educational Jupyter Notebooks for Mixed-Signal Converters at FCT-NOVA
+site_author: Diogo André Dias
+
+repo_url: https://github.com/das-dias/signal-converters-notebooks
+repo_name: das-dias/signal-converters-notebooks
+
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mknotebooks:
+      enable_default_jupyter_cell_styling: true
+      enable_default_pandas_dataframe_styling: true
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Practical Classes:
+      - "1. Signal Representation": notebooks/practical_class_1.ipynb
+      - "2. Ideal ADC/DAC Modeling": notebooks/practical_class_2.ipynb
+      - "3. Linear & Non-linear Errors": notebooks/practical_class_3.ipynb
+      - "4. DAC/ADC Error Exercises": notebooks/practical_class_4.ipynb
+      - "5. Noise Modeling": notebooks/practical_class_5.ipynb
+      - "6. Resistive DAC Modeling": notebooks/practical_class_6.ipynb
+      - "7. Charge Redistribution DAC": notebooks/practical_class_7.ipynb
+      - "8. Current Steering DAC": notebooks/practical_class_8.ipynb
+      - "9. Resistive ADC Architectures": notebooks/practical_class_9.ipynb
+      - "10. Capacitive ADC (SAR)": notebooks/practical_class_10.ipynb
+  - Projects:
+      - "Pipeline SAR ADC": notebooks/project1_loopunrolled_pipeline_sar_adc.ipynb
+  - Reference:
+      - "Utilities (utils.py)": reference/utils.md
+      - "FFT Engine (fft.py)": reference/fft.md

@@ -1,7 +1,12 @@
 jupyter>=1.1.1
 matplotlib>=3.10.0
+mkdocs>=1.6
+mkdocs-material>=9.5
+mknotebooks>=0.8
 nbconvert>=7.16.6
 numpy>=2.2.2
+pylint>=4.0.6
+ruff>=0.15.21
 scienceplots>=2.1.1
 scipy>=1.15.1
 seaborn>=0.13.2
